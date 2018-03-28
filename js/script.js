@@ -15,7 +15,6 @@ $(function () {
 
     function movePhoto(direction) {
         currentIndex = indicators.siblings('.active').index();
-
         nextIndex = currentIndex;
         switch (direction) {
             case RIGHT_DIRECTION:
@@ -35,11 +34,10 @@ $(function () {
                 } else {
                     nextIndex--;
                 }
-                 moveLastSlide();
-             
+                moveLastSlide();
+
                 break;
         }
-
         indicators.removeClass("active").eq(nextIndex).addClass("active");
     }
 
@@ -55,33 +53,19 @@ $(function () {
     }
 
     function moveLastSlide() {
-         carouselList.css({
-                'margin-left': -700
-            })
+        carouselList.css({
+            'margin-left': -700
+        })
         var firstItem = carouselList.find("li:first");
         var lastItem = carouselList.find("li:last");
         firstItem.before(lastItem);
         carouselList.animate({
             'margin-left': 0
-        },800);
+        }, 800);
     }
-
-    
-//      function moveLastSlide() {
-//         carouselList.css({
-//                'margin-left': -700
-//            })
-//        var firstItem = carouselList.find("li:first");
-//        var lastItem = carouselList.find("li:last");
-//        firstItem.before(lastItem);
-//        carouselList.css({
-//            'margin-left': -700
-//        });
-//    }
 
 
     function moveSlider(nextIndex) {
-
         carouselList.animate({
             "margin-left": -700
         }, moveFirstSlide);
@@ -91,7 +75,6 @@ $(function () {
 
 
     function ChangeSlide() {
-
         currentIndex = indicators.siblings('.active').index();
         nextIndex = currentIndex;
         if (currentIndex == indicators.length - 1) {
@@ -106,7 +89,7 @@ $(function () {
     var autoMove = setInterval(function () {
         ChangeSlide();
     }, 6000);
-    
+
 
     left.click(function () {
         if (!carouselList.is(':animated')) {
@@ -120,100 +103,48 @@ $(function () {
             movePhoto(RIGHT_DIRECTION);
         }
     });
-    
-    
-    
-    
-        indicators.click(function () {
+
+
+
+
+
+    indicators.click(function () {
         nextIndex = $(this).index();
         currentIndex = indicators.siblings('.active').index();
-            var distance = currentIndex - nextIndex;
-            var prevSlide = false;
-            if(distance < 0){
-                prevSlide = true;
-                distance = distance * -1;
-            }
-            for (let i = 0; i < distance; i++ ) {
+        var distance = currentIndex - nextIndex;
+        var prevSlide = false;
+        if (distance < 0) {
+            prevSlide = true;
+            distance = distance * -1;
+
+        }
+
+        // IIFE
+        (function step() {
+
+            if (distance--) {
+
                 if (prevSlide) {
-                    
-                     movePhoto(RIGHT_DIRECTION);
-                }else {
-                     movePhoto(LEFT_DIRECTION);
+
+                    movePhoto(RIGHT_DIRECTION);
+                } else {
+
+                    movePhoto(LEFT_DIRECTION);
                 }
+
+                setTimeout(step, 1000);
             }
-
-//		indicators.removeClass("active").eq(nextIndex).addClass("active");
-
+        })();
     });
-    
-        
-//    indicators.click(function () {
-//        nextIndex = $(this).index();
-//        currentIndex = indicators.siblings('.active').index();
-//            var distance = currentIndex - nextIndex;
-//            var prevSlide = false;
-//            if(distance < 0){
-//                prevSlide = true;
-//                distance = distance * -1;
-//            }
-//            
-//                if (prevSlide) {
-//                    carouselList.animate({
-//                    "margin-left": -700 * distance
-//                }, moveFirstSlide);
-//                }else {
-//                     carouselList.css({
-//                'margin-left': -700 * distance
-//            })
-//        var firstItem = carouselList.find("li:first");
-//        var lastItem = carouselList.find("li:last");
-//        firstItem.before(lastItem);
-//        carouselList.animate({
-//            'margin-left': 0
-//        });
-//                }
-//            
-//
-//		indicators.removeClass("active").eq(nextIndex).addClass("active");
-//
-//    });
-//    
-    
-    
-    
-    
-    
-    
-    
-//    indicators.click(function () {
-//        nextIndex = $(this).index();
-//        currentIndex = indicators.siblings('.active').index();
-//            var distance = currentIndex - nextIndex;
-//            var prevSlide = false;
-//            if(distance < 0){
-//                prevSlide = true;
-//                distance = distance * -1;
-//            }
-//            for (let i = 0; i < distance; i++ ) {
-//                if (prevSlide) {
-//                    carouselList.animate({
-//                    "margin-left": -700
-//                }, moveFirstSlide);
-//                }else {
-//                      moveLastSlide();
-//                }
-//            }
-//
-//		indicators.removeClass("active").eq(nextIndex).addClass("active");
-//
-//    });
-//    
 
-//    
-//        indicators.click(function () {
-//        nextIndex = $(this).index();
-//        currentIndex = indicators.siblings('.active').index();
-//            carouselList.stop().animate({"left": -700 * nextIndex});
-//            indicators.removeClass("active").eq(nextIndex).addClass("active");
-//        })
+
+    carouselList.hover(function () {
+        window.clearInterval(autoMove);
+    }, function () {
+        autoMove = setInterval(function () {
+            ChangeSlide();
+        }, 6000);
+    });
+
+
 });
